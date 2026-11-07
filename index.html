@@ -975,7 +975,8 @@ var THINKERS = [
     name: 'Max Ramsahoye',
     group: 'The Holists',
     numeralsOnly: true,  // the right menu shows numerals without source titles
-    firstHold: 5000,     // I gives way to II after 5 seconds, then they cycle
+    firstHold: 10000,    // I gives way to II after 10 seconds,
+    hold: 15000,         // then each stays 15 seconds as they cycle
     width: '52rem',      // the column, sized for II; I keeps its narrower box
     text: '<a href="https://maxramsahoye.github.io/civilisationtheory/#metacrisis" target="_blank" rel="noopener">The Metacrisis</a> is (a conceptual frame for capturing) civilisation’s total <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#problem-complex" target="_blank" rel="noopener"><i>problem complex</i></a></strong>, the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#generative-dynamics" target="_blank" rel="noopener"><i>generative dynamics</i></a></strong> that (re)produce it and the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#attractor-states" target="_blank" rel="noopener"><i>attractor states</i></a></strong> it vectors towards. It marks the terminal phase in the developmental process of the current <strong><a href="https://globalmaximum.substack.com/p/the-life-world-system-on-the-universal" target="_blank" rel="noopener"><span class="nowrap">life-world-system</span></a></strong>, which is now emergently posing an existential risk to humanity.',
     also: [
@@ -1211,14 +1212,15 @@ var THINKERS = [
   // motion.
   // An entry's `firstHold` (ms) replaces the first definition's time when
   // the entry opens, counted from when the loading screen has gone.
-  var firstHold = 0, siteReady = !document.getElementById('loader');
+  var firstHold = 0, hold = 0, siteReady = !document.getElementById('loader');
   document.addEventListener('site:ready', function(){ siteReady = true; schedule(); });
   function schedule(){
     clearTimeout(cycleTimer);
     if (versions.length < 2 || paused || held || (reduceMotion && reduceMotion.matches)) return;
     if (!siteReady) return;
     var words = definition.textContent.split(/\s+/).length;
-    var wait = firstHold && version === 0 ? firstHold : Math.max(15000, words * 400);
+    // An entry's `hold` (ms) fixes each definition's time after that.
+    var wait = firstHold && version === 0 ? firstHold : hold || Math.max(15000, words * 400);
     cycleTimer = setTimeout(function(){ firstHold = 0; fadeTo((version + 1) % versions.length); }, wait);
   }
   [panel, versionNav].forEach(function(el){
@@ -1282,6 +1284,7 @@ var THINKERS = [
       panel.classList.remove('is-slow', 'is-cycling');
       versions = versionsOf(e); held = false;
       firstHold = e.firstHold || 0;
+      hold = e.hold || 0;
       // Article names beside the numerals, unless the entry asks for
       // numerals alone (numeralsOnly: true).
       numeralsOnly = !!e.numeralsOnly;
