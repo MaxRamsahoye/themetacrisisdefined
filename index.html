@@ -440,8 +440,8 @@ main {
 .supertitle, .definition, .source, .orgs { transition: opacity .2s ease; }
 .is-swapping .supertitle, .is-swapping .definition, .is-swapping .source, .is-swapping .orgs { opacity: 0; }
 /* A theorist's definitions cycle with a slower fade-out and fade-in. */
-.is-slow .definition, .is-slow .source { transition-duration: .6s; }
-.is-cycling .definition, .is-cycling .source { opacity: 0; }
+.is-slow .supertitle, .is-slow .definition, .is-slow .source { transition-duration: .6s; }
+.is-cycling .supertitle, .is-cycling .definition, .is-cycling .source { opacity: 0; }
 
 /* Numerals menu, right: one numeral per definition when a theorist has more
    than one. It mirrors the names menu: the vertical rule on its left, a tick
@@ -1154,27 +1154,8 @@ var THINKERS = [
     else layout.style.removeProperty('--measure');
     versionButtons.forEach(function(b, j){ b.setAttribute('aria-pressed', String(j === k)); });
   }
-  // Hold the panel at the height it has with the longest of the theorist's
-  // definitions, so the name and title stay still as they cycle. The source
-  // stays right beneath the text; any spare room falls below it.
-  function holdHeight(){
-    panel.style.minHeight = '';
-    if (versions.length < 2) return;
-    var keep = version, h = 0;
-    versions.forEach(function(v, k){
-      renderVersion(k);
-      h = Math.max(h, panel.offsetHeight);
-    });
-    renderVersion(keep);
-    panel.style.minHeight = h + 'px';
-  }
-  var resizeTimer;
-  window.addEventListener('resize', function(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(holdHeight, 150); });
-  // Measure again once the web fonts (the bold above all) have loaded.
-  if (document.fonts) {
-    document.fonts.ready.then(holdHeight);
-    if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', holdHeight);
-  }
+  // Each definition is centred on its own height. The name fades with it
+  // as the definitions cycle, so the re-centring happens out of sight.
   var numeralsOnly = false;
   function buildVersions(){
     versionList.textContent = '';
@@ -1298,7 +1279,6 @@ var THINKERS = [
       numeralsOnly = !!e.numeralsOnly;
       buildVersions();
       renderVersion(0);
-      holdHeight();
       orgs.hidden = i !== about;
       if (i === about) countUp();
       if (i !== about) pickOrg(-1);
