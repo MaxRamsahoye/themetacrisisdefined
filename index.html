@@ -140,7 +140,7 @@ body {
   transition: background-color .4s ease, color .4s ease;
 }
 
-.theme-toggle, .info-toggle {
+.theme-toggle, .info-toggle, .article-toggle {
   position: fixed;
   top: 1.25rem;
   right: 1.25rem;
@@ -157,12 +157,14 @@ body {
   cursor: var(--cursor-link);
   transition: color .2s ease;
 }
-.theme-toggle:hover, .info-toggle:hover, .info-toggle[aria-pressed="true"] { color: var(--ink); }
-.theme-toggle:focus-visible, .info-toggle:focus-visible { outline: 2px solid var(--ink-soft); outline-offset: 3px; }
+.theme-toggle:hover, .info-toggle:hover, .info-toggle[aria-pressed="true"], .article-toggle:hover, .article-toggle[aria-pressed="true"] { color: var(--ink); }
+.theme-toggle:focus-visible, .info-toggle:focus-visible, .article-toggle:focus-visible { outline: 2px solid var(--ink-soft); outline-offset: 3px; }
 /* The info button sits one button's width to the left of the theme toggle. */
 .info-toggle { right: 3.75rem; }
+/* The article button sits to the left of the info button. */
+.article-toggle { right: 6.25rem; }
 /* The Civilisational Map's icons: hairline strokes that stay 1.4px at any size. */
-.theme-toggle svg, .info-toggle svg {
+.theme-toggle svg, .info-toggle svg, .article-toggle svg {
   display: none;
   width: 1.15rem;
   height: 1.15rem;
@@ -172,9 +174,9 @@ body {
   stroke-linejoin: miter;
   overflow: visible;
 }
-.info-toggle svg { display: block; }
-.theme-toggle svg *, .info-toggle svg * { vector-effect: non-scaling-stroke; }
-.theme-toggle .fill, .info-toggle .fill { fill: currentColor; stroke: none; }
+.info-toggle svg, .article-toggle svg { display: block; }
+.theme-toggle svg *, .info-toggle svg *, .article-toggle svg * { vector-effect: non-scaling-stroke; }
+.theme-toggle .fill, .info-toggle .fill, .article-toggle .fill { fill: currentColor; stroke: none; }
 :root[data-theme="light"] .theme-toggle .i-light,
 :root[data-theme="dark"] .theme-toggle .i-dark,
 :root[data-theme="sepia"] .theme-toggle .i-sepia,
@@ -191,8 +193,8 @@ body {
 .wordmark {
   display: block;
   color: var(--ink);
-  /* Shrinks on narrow phones so it stays clear of the two icons. */
-  font-size: clamp(.95rem, calc((100vw - 8.75rem) / 8.5), 2rem);
+  /* Shrinks on narrow phones so it stays clear of the three icons. */
+  font-size: clamp(.95rem, calc((100vw - 11.25rem) / 8.5), 2rem);
   font-weight: 700;
   line-height: 2.5rem;
   letter-spacing: .01em;
@@ -232,7 +234,7 @@ body {
 /* Italic leans into the opening mark: give it more room. */
 .epigraph .qm-open { margin-right: .22em; }
 @media (min-width: 901px) and (max-width: 1219px) {
-  .epigraph { left: 20.5rem; right: 7rem; transform: none; white-space: normal; text-wrap: balance; font-size: 1.15rem; line-height: 1.4; padding-top: .8rem; }
+  .epigraph { left: 20.5rem; right: 9.5rem; transform: none; white-space: normal; text-wrap: balance; font-size: 1.15rem; line-height: 1.4; padding-top: .8rem; }
 }
 @media (max-width: 900px) {
   .epigraph { top: 6.6rem; left: 1.25rem; right: 1.25rem; transform: none; white-space: normal; text-wrap: balance; font-size: 1.3rem; line-height: 1.4; padding-top: 0; }
@@ -708,7 +710,7 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body, .theme-toggle, .info-toggle, .thinker, .thinker::after, .supertitle, .definition, .source, .source a { transition: none; }
+  body, .theme-toggle, .info-toggle, .article-toggle, .essay, .thinker, .thinker::after, .supertitle, .definition, .source, .source a { transition: none; }
 }
 /* Short desktop screens: tighter menu spacing so the whole list fits. */
 @media (min-width: 901px) and (max-height: 880px) {
@@ -717,6 +719,65 @@ h1 {
   .thinker-section { gap: .6rem; padding-bottom: .75rem; }
   .thinker-names { gap: .5rem; }
 }
+/* The article: a long read in the middle column, set left like a page of
+   prose, with the name and title above the definitions put away. */
+.is-article .supertitle, .is-article h1, .is-article .definition, .is-article .source { display: none; }
+.essay {
+  width: 100%;
+  max-width: 42rem;
+  text-align: left;
+  font-size: clamp(1.15rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+  transition: opacity .2s ease;
+}
+.essay[hidden] { display: none; }
+.is-swapping .essay { opacity: 0; }
+.essay p { margin: 0 0 1em; text-wrap: pretty; }
+.essay-head { text-align: center; margin-bottom: 2.25rem; }
+.essay-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(2.1rem, 4.4vw, 3rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+.essay-mark { font-size: .55em; vertical-align: .9em; line-height: 0; margin-left: .05em; }
+.essay-notes .essay-mark { font-size: 1em; vertical-align: 0; margin: 0; }
+.essay-head .essay-subtitle { margin: 1rem 0 0; font-style: italic; font-size: 1.2em; line-height: 1.4; text-wrap: balance; }
+.essay-head .essay-byline { margin: 1rem 0 0; letter-spacing: .14em; text-transform: uppercase; font-size: .8em; font-weight: 600; }
+.essay-abstract { font-size: 1.08em; }
+.essay h3 {
+  margin: 2.5rem 0 1rem;
+  font-weight: 600;
+  font-size: 1.35em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.essay-notes, .essay-note, .essay-proponents { font-size: .82em; color: var(--ink-soft); }
+.essay-notes { margin: 1.75rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.essay-notes p { margin-bottom: .7em; }
+.essay-views { margin: 1.25rem 0 1.5rem; padding-left: 1.25rem; border-left: 1px solid var(--rule); }
+.essay-views .essay-proponents { margin-top: -.6em; }
+.essay strong { -webkit-text-stroke: .02em currentColor; }
+.essay blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--rule);
+  font-size: .94em;
+}
+.essay-cite { font-size: .9em; color: var(--ink-soft); }
+.essay-cite::before { content: '— '; }
+.essay a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-decoration-thickness: 1px;
+  text-underline-offset: .18em;
+  transition: text-decoration-color .2s ease;
+}
+.essay a:hover { text-decoration-color: var(--ink-soft); }
+.essay a:focus-visible { outline: none; text-decoration-color: currentColor; }
+
 /* Phones: larger description and source for easier reading. */
 @media (max-width: 600px) {
   .definition { font-size: 1.375rem; }
@@ -728,6 +789,9 @@ h1 {
 <div class="loader" id="loader" aria-hidden="true"><div class="dominoes loader-dominoes" id="loader-dominoes"></div></div>
 <button class="info-toggle" id="info-toggle" type="button" aria-label="About this project" aria-pressed="false" title="About this project">
   <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40"/><circle class="fill" cx="50" cy="31" r="4.5"/><line x1="50" y1="44" x2="50" y2="72"/></svg>
+</button>
+<button class="article-toggle" id="article-toggle" type="button" aria-label="Article: What is the Metacrisis and What Should it Be?" aria-pressed="false" title="Article">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M26 10 H61 L76 25 V90 H26 Z"/><path d="M61 10 V25 H76"/><line x1="37" y1="44" x2="65" y2="44"/><line x1="37" y1="56" x2="65" y2="56"/><line x1="37" y1="68" x2="65" y2="68"/><line x1="37" y1="80" x2="54" y2="80"/></svg>
 </button>
 <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Change theme (black, white, sepia, blue)" aria-keyshortcuts="T" title="Change theme (T)">
   <svg class="i-light" viewBox="-3.7 -3.7 107.3 107.3" aria-hidden="true"><circle cx="50" cy="50" r="18"/><line x1="81.0" y1="50.0" x2="94.0" y2="50.0"/><line x1="71.9" y1="71.9" x2="81.1" y2="81.1"/><line x1="50.0" y1="81.0" x2="50.0" y2="94.0"/><line x1="28.1" y1="71.9" x2="18.9" y2="81.1"/><line x1="19.0" y1="50.0" x2="6.0" y2="50.0"/><line x1="28.1" y1="28.1" x2="18.9" y2="18.9"/><line x1="50.0" y1="19.0" x2="50.0" y2="6.0"/><line x1="71.9" y1="28.1" x2="81.1" y2="18.9"/></svg>
@@ -751,6 +815,60 @@ h1 {
     <h1>The Metacrisis</h1>
     <p class="definition" id="definition"><a href="https://maxramsahoye.github.io/civilisationtheory/#metacrisis" target="_blank" rel="noopener">The Metacrisis</a> is (a conceptual frame for capturing) civilisation’s total <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#problem-complex" target="_blank" rel="noopener"><i class="nowrap">problem complex</i></a></strong>, the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#generative-dynamics" target="_blank" rel="noopener"><i class="nowrap">generative dynamics</i></a></strong> that (re)produce it and the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#attractor-states" target="_blank" rel="noopener"><i class="nowrap">attractor states</i></a></strong> it vectors towards. It marks the terminal phase in the developmental process of the current <strong><a href="https://globalmaximum.substack.com/p/the-life-world-system-on-the-universal" target="_blank" rel="noopener"><span class="nowrap">life-world-system</span></a></strong>, which is now emergently posing an existential risk to humanity. It is a historical period in which the future of civilisation will be determined: exhibiting concurrent tendencies of collapse and catastrophe, dystopia and suffering, protopia and flourishing. The metacrisis results from a <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#scarcity-rivalry-orientation" target="_blank" rel="noopener">fundamental orientation</a></strong> (separate, rivalrous, instrumentalising) operationalised in dominant <strong>institutional structures</strong> (nation-states, market-capitalism, corporations) and enacted in the dominant <strong><a href="https://www.civilizationresearchinstitute.org/research/reality-check/#:~:text=motivated%20by%20power.-,Nature%20of%20Mind%20and%20Moloch,-The%20nature%20of" target="_blank" rel="noopener">second nature of minds</a></strong> (self-preservation, resource-acquisition,&nbsp;power-seeking).</p>
     <p class="source" id="source"></p>
+    <article class="essay" id="essay" hidden>
+      <header class="essay-head">
+        <h2 class="essay-title">What is the Metacrisis and What Should it Be?<sup class="essay-mark">*</sup></h2>
+        <p class="essay-subtitle">Using conceptual engineering to arrive at a clearer definition of the metacrisis</p>
+        <p class="essay-byline">by <a href="https://maxramsahoye.github.io/max/" target="_blank" rel="noopener">Max Ramsahoye</a></p>
+      </header>
+      <p class="essay-abstract">The ‘metacrisis’ is a nascent frame pointing towards the total landscape of interacting crises, the critical trajectories of technological civilisation and the causal mechanisms from which they emerge. Whilst the concept is now employed by a range of interdisciplinary theorists – across existential risk studies (Kemp, Hagens), social philosophy (Schmachtenberger, Rowson) and cognitive psychology (McGilchrist, Vervaeke) – it remains relatively underdeveloped, lacking a substantial literature, a canonical definition and an integrated meta-theory. This article identifies two prominent views of what the metacrisis is and what is causing it – (1) the Modernist-Idealist view and (2) the Civilisational-Materialist view – as well as conceptual confusions regarding cause and effect with the -meta in metacrisis.</p>
+      <div class="essay-notes">
+        <p><span class="essay-mark">*</span> The title follows the form of David Chalmers’ paper <a href="https://philarchive.org/rec/CHAWIC-3" target="_blank" rel="noopener">‘What is Conceptual Engineering and What Should it Be’</a>, which itself pays tribute to Sally Haslanger’s paper <a href="https://philpapers.org/rec/HASGAR" target="_blank" rel="noopener">‘Gender and Race: What are they? What do we want them to be?’</a>.</p>
+        <p>This is in large part a successor to Jonah Wilberg’s excellent in-depth article <a href="https://thewiderangle.substack.com/p/metacrisis-an-overview" target="_blank" rel="noopener">‘Metacrisis: an Overview’</a>.</p>
+        <p>This question was the premise of a session we ran at the Sensemaking summer school 2025; with most participants defining the Metacrisis as a 20–21st century phenomenon vs my own civilisation-scale view that it extends across macrohistorical time; giving rise to an early stage and late stage or developmental/endgame model of the Metacrisis.</p>
+      </div>
+
+      <h3>When is the Metacrisis and What Caused it?</h3>
+      <p>A major point of contention within the discourse surrounding the metacrisis pertains to where to situate its emergence within world-history and, inextricably bound with this, what its initial generative conditions were. Here there are two main views:</p>
+      <div class="essay-views">
+        <p><strong>(1) The Modernist-Idealist view:</strong> the metacrisis is a product of modernity, set in motion by the period and thought of the Enlightenment.</p>
+        <p class="essay-proponents"><i>Proponents:</i> Pollock, Rowson, McGilchrist, Vervaeke; <i>related:</i> Adorno/Horkheimer</p>
+        <p><strong>(2) The Civilisational-Materialist view:</strong> the metacrisis originates with the neolithic revolution, the transition from nomadic hunter-gatherer societies to settled agricultural civilisations, later exacerbated by the industrial and information revolutions.</p>
+        <p class="essay-proponents"><i>Proponents:</i> Kemp, Hagens, (Peter) Joseph; <i>informed by:</i> Diamond, Graeber, Sapolsky</p>
+      </div>
+      <p>To provide a brief (oversimplified) characterisation, the modernist view is more of a proximate and idealist theory of causation locating the metacrisis in recent history and in the realm of ideas. Whereas the civilisational view is more macrohistorical and materialist, identifying the economic and evolutionary constraints and subsequent developmental process of early proto-state-market complexes as the cause.</p>
+      <p class="essay-note">*There may also be a modernist-materialist view and a civilisational-idealist view.</p>
+
+      <h3>The Modernist-Idealist View</h3>
+      <p>Exemplifying the modernist view is a recent whitepaper <i>‘From Polycrisis to Metacrisis: a Short Introduction’</i> by Pollock and Bell (Life Itself, 2025),</p>
+      <blockquote>
+        <p>Throughout the modern age, a cultural paradigm rooted in the embrace of empiricism, reductionism and rationalism has come to dominate a globalised, market-based civilisation…over the four centuries since the European ‘Enlightenment’…Most theorists of the metacrisis identify our root condition with the dying paradigm and / or its manifestations in particular systemic effects and behaviours…Systems of knowledge, ways of life, structures and institutions built on modern principles reproduce our metacrisis…</p>
+        <p>…intermediate [structural] dysfunctions are in turn rooted in deeper cultural-ideological and psychological substrates. The root layer of our crises consists of foundational ideologies (cultural paradigms) interacting with deep human tendencies. For example: Core ideological features of modernity such as anthropocentrism, individualism, mechanistic reductionism, rationalism. Potential human tendencies such as greed, fear and control, amplified by systemic factors…it makes sense to understand shared worldviews as directly foundational to structures and behaviors (including institutions and technologies).</p>
+      </blockquote>
+
+      <h3>The Civilisational-Materialist View</h3>
+      <p>Representing the civilisational view is a recent book <i>‘Goliath’s Curse: The History &amp; Future of Civilisational Collapse’</i> by Luke Kemp (CSER, 2025).</p>
+      <blockquote>
+        <p>The root causes of our endgame [metacrisis] were put down when the darker angels of our nature (status competition, power corrupting, the dark triad, and the authoritarian impulse) met the new environmental conditions of the Holocene (such as lootable resources). Goliaths began to emerge. At the individual level, those who were the strongest status seekers (and often the most adept at violence and manipulation) were selected for. At the group level, communities that were more effective at conquest tended to outcompete their neighbours and grow. It was multi-level selection. These new groups even invented myths to valorize growth and conquest. From the civilizing mission of European colonizers to the jihad of the Islamic caliphate, dominance hierarchies have had ideologies which justify universal expansion.</p>
+        <p>These new Goliaths amplified our darker angels. They fell into competitive ‘Goliath traps’: arms races, races to the bottom, and status races using conspicuous consumption. Yet these weren’t just races; they were rackets. Groups who were competing to extract resources from a given population would regularly trade (as with the Late Bronze Age or today) and band together when necessary. Those races/rackets, whether it be for protection or the extraction of data or fossil fuels, are the main drivers of our endgame today.</p>
+        <p>Goliath fuel and our darker angels are the root causes of our endgame. They spurred the creation of Goliath systems which became stuck in different, interlinked races whether it be for status, security, or a competitive advantage. Today these Goliath traps have branched out into all the contributors to global catastrophic risk: nuclear weapons, AI, killer robots, climate change, the infringement of planetary boundaries, and others. This tree, from the root causes to our unfolding endgame, is still growing. Unfortunately, it’s difficult to see how this thousand-year-old process is going to end well.</p>
+      </blockquote>
+      <p>Each view has a different emphasis. The macrohistorical conception emphasises drivers and causes (continuous across time); the evolutionary, developmental and recurring nature of the metacrisis. The modernity view emphasises amplification and consequences (distinct to the contemporary period); the global, critical and terminal nature of the metacrisis.</p>
+      <p>There is an asymmetry between the two views such that the big history view can incorporate the modernist view, but the modernist view cannot extend back to the civilisational view.</p>
+      <p>A complete meta-theory of the metacrisis integrates these two views into a holistic theory of history and causation. (CosmoErotic Humanism: ‘the metacrisis, understanding existential and catastrophic risks as rooted not only in failures of economics, governments, and technology, but in failed worldviews’).</p>
+
+      <h3>The Deep Anthropocene View</h3>
+      <p>There is a third ‘deep anthropocene’ view that the metacrisis originated in the human capacity for tool-making and iterative improvement that outpaced the natural equilibrium between predator and prey.</p>
+      <blockquote>
+        <p>I wouldn’t describe the agricultural revolution as the beginning of Game A … In a way you could say it was a major step function in the beginning of the anthropocene … But I would take it back to stone tools and fire …</p>
+        <p class="essay-cite">Daniel Schmachtenberger, <i>Game B Dialogos</i>, 48:30</p>
+      </blockquote>
+
+      <h3>Cause and Effect</h3>
+      <p>There is a potential conceptual confusion here between whether the -meta crisis encompasses the ‘root causes’ or is an (branch?) ‘effect’ of them.</p>
+      <p>In the former case, the metacrisis can be classified into early-stage and late-stage variants with the root causes and developmental trajectory across hundreds or thousands of years, leading to a more critical and terminal stage in the 21st century.</p>
+      <p>In the latter case, it could be stated that the initial conditions existed in the Enlightenment or Neolithic, but that the metacrisis itself did not develop until later – perhaps with the Industrial Revolution (1800s), the Great Acceleration (1950s+), or the Atomic Age (1945) – with the rise of advanced, technological, globalised civilisation, planetary-scale interference with the biosphere (climate change) and the first civilisation-terminating technology (nuclear weapons).</p>
+    </article>
     <div class="orgs" id="orgs" hidden>
       <p class="orgs-label">Research organisations represented</p>
       <ul class="orgs-list" id="orgs-list"></ul>
@@ -960,6 +1078,15 @@ var ABOUT = {
   slug: 'about',
   width: '57rem',
   text: '<strong><a href="https://maxramsahoye.github.io/themetacrisisdefined/"><i>themetacrisisdefined</i></a></strong> is a central reference site that collates <strong>definitions of the metacrisis from the theorists who have employed the concept</strong>. Within the space, the term is used in at least three recurring ways, and its exact meaning is still contested. Read side by side, the definitions show where the major theorists converge and where they part: some diagnose the metacrisis as emerging from the <i>external</i> structures of civilisation, some to its <i>inner</i> world, and some unify the two. To proceed, select a name to read a definition of the Metacrisis in its theorist’s own words. This genealogy was curated by <a href="https://maxramsahoye.github.io/max/" target="_blank" rel="noopener">Max Ramsahoye</a>.',
+};
+
+// The article, opened from the page button at the top right. Its text is
+// in the page itself (#essay).
+var ARTICLE = {
+  name: 'What is the Metacrisis and What Should it Be?',
+  slug: 'article',
+  width: '42rem',
+  text: ''
 };
 
 // Research organisations listed on the About entry, with their theorists
@@ -1288,6 +1415,8 @@ var THINKERS = [
       buildVersions();
       renderVersion(0);
       orgs.hidden = i !== about;
+      essay.hidden = i !== article;
+      panel.classList.toggle('is-article', i === article);
       if (i === about) countUp();
       if (i !== about) pickOrg(-1);
       panel.classList.toggle('is-quote', i !== home);
@@ -1410,6 +1539,14 @@ var THINKERS = [
     e.preventDefault();
     if (current !== about) show(about);
   });
+
+  // The article: the page button toggles it.
+  var essay = document.getElementById('essay');
+  var articleBtn = document.getElementById('article-toggle');
+  var article = entries.length;
+  entries.push(ARTICLE);
+  buttons.push(articleBtn);
+  articleBtn.addEventListener('click', function(){ show(current === article ? home : article); });
 
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && current !== home) show(home);
