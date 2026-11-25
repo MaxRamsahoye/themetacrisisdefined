@@ -726,7 +726,7 @@ h1 {
 .is-article .supertitle, .is-article h1, .is-article .definition, .is-article .source { display: none; }
 .essay {
   width: 100%;
-  max-width: 42rem;
+  max-width: 50rem;
   text-align: left;
   font-size: clamp(1.15rem, 1.6vw, 1.3rem);
   line-height: 1.55;
@@ -735,6 +735,14 @@ h1 {
   transition: opacity .2s ease;
 }
 .essay[hidden] { display: none; }
+/* While the article is open, the names menu fades away on desktop and comes
+   back while the pointer is anywhere left of the article's text (or while
+   the menu has keyboard focus). */
+@media (min-width: 901px) and (hover: hover) {
+  .thinkers { transition: opacity .4s ease; }
+  .layout.is-article .thinkers { opacity: 0; }
+  .layout.is-article.nav-awake .thinkers, .layout.is-article .thinkers:focus-within { opacity: 1; }
+}
 /* On phones the names menu follows the article, which has room of its own. */
 @media (max-width: 900px) { .essay { padding-bottom: 2.5rem; } }
 .is-swapping .essay { opacity: 0; }
@@ -1091,7 +1099,7 @@ var ABOUT = {
 var ARTICLE = {
   name: 'What is the Metacrisis and What Should it Be?',
   slug: 'article',
-  width: '42rem',
+  width: '50rem',
   text: ''
 };
 
@@ -1423,6 +1431,8 @@ var THINKERS = [
       orgs.hidden = i !== about;
       essay.hidden = i !== article;
       panel.classList.toggle('is-article', i === article);
+      layout.classList.toggle('is-article', i === article);
+      if (i === article) layout.classList.remove('nav-awake');
       if (i === about) countUp();
       if (i !== about) pickOrg(-1);
       panel.classList.toggle('is-quote', i !== home);
@@ -1553,6 +1563,13 @@ var THINKERS = [
   entries.push(ARTICLE);
   buttons.push(articleBtn);
   articleBtn.addEventListener('click', function(){ show(current === article ? home : article); });
+  // On the article, the names menu wakes while the pointer is left of the
+  // text column.
+  document.addEventListener('pointermove', function(e){
+    if (current !== article || e.pointerType === 'touch') return;
+    layout.classList.toggle('nav-awake', e.clientX < essay.getBoundingClientRect().left);
+  });
+  document.documentElement.addEventListener('mouseleave', function(){ layout.classList.remove('nav-awake'); });
 
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && current !== home) show(home);
