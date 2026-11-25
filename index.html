@@ -584,7 +584,7 @@ main {
   color: var(--ink);
 }
 .source:empty { display: none; }
-.source a {
+.source a, .supertitle a {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--rule);
@@ -592,8 +592,9 @@ main {
   text-underline-offset: .2em;
   transition: color .2s ease, text-decoration-color .2s ease;
 }
-.source a:hover { color: var(--ink); text-decoration-color: var(--ink-soft); }
-.source a:focus-visible { outline: none; color: var(--ink); text-decoration-color: currentColor; }
+.supertitle a { text-underline-offset: .25em; }
+.source a:hover, .supertitle a:hover { color: var(--ink); text-decoration-color: var(--ink-soft); }
+.source a:focus-visible, .supertitle a:focus-visible { outline: none; color: var(--ink); text-decoration-color: currentColor; }
 .qm {
   font-size: 1.45em;
   line-height: 0;
@@ -746,7 +747,7 @@ h1 {
     <ol id="thinker-list" class="thinker-sections"></ol>
   </nav>
   <main id="definition-panel">
-    <p class="supertitle" id="supertitle" aria-live="polite">Max Ramsahoye</p>
+    <p class="supertitle" id="supertitle" aria-live="polite"><a href="https://maxramsahoye.github.io/max/" target="_blank" rel="noopener">Max Ramsahoye</a></p>
     <h1>The Metacrisis</h1>
     <p class="definition" id="definition"><a href="https://maxramsahoye.github.io/civilisationtheory/#metacrisis" target="_blank" rel="noopener">The Metacrisis</a> is (a conceptual frame for capturing) civilisation’s total <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#problem-complex" target="_blank" rel="noopener"><i class="nowrap">problem complex</i></a></strong>, the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#generative-dynamics" target="_blank" rel="noopener"><i class="nowrap">generative dynamics</i></a></strong> that (re)produce it and the <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#attractor-states" target="_blank" rel="noopener"><i class="nowrap">attractor states</i></a></strong> it vectors towards. It marks the terminal phase in the developmental process of the current <strong><a href="https://globalmaximum.substack.com/p/the-life-world-system-on-the-universal" target="_blank" rel="noopener"><span class="nowrap">life-world-system</span></a></strong>, which is now emergently posing an existential risk to humanity. It is a historical period in which the future of civilisation will be determined: exhibiting concurrent tendencies of collapse and catastrophe, dystopia and suffering, protopia and flourishing. The metacrisis results from a <strong><a href="https://maxramsahoye.github.io/civilisationtheory/#scarcity-rivalry-orientation" target="_blank" rel="noopener">fundamental orientation</a></strong> (separate, rivalrous, instrumentalising) operationalised in dominant <strong>institutional structures</strong> (nation-states, market-capitalism, corporations) and enacted in the dominant <strong><a href="https://www.civilizationresearchinstitute.org/research/reality-check/#:~:text=motivated%20by%20power.-,Nature%20of%20Mind%20and%20Moloch,-The%20nature%20of" target="_blank" rel="noopener">second nature of minds</a></strong> (self-preservation, resource-acquisition,&nbsp;power-seeking).</p>
     <p class="source" id="source"></p>
@@ -973,6 +974,7 @@ var ORGS = [
 var THINKERS = [
   {
     name: 'Max Ramsahoye',
+    url: 'https://maxramsahoye.github.io/max/',  // the name above the title links here
     group: 'The Holists',
     numeralsOnly: true,  // the right menu shows numerals without source titles
     firstHold: 10000,    // I gives way to II after 10 seconds,
@@ -1268,7 +1270,13 @@ var THINKERS = [
     }
     buttons.forEach(function(b, j){ b.setAttribute('aria-pressed', String(j === i)); });
     function apply(){
-      supertitle.textContent = e.name;
+      supertitle.textContent = '';
+      if (e.url) {
+        var nameLink = document.createElement('a');
+        nameLink.href = e.url; nameLink.target = '_blank'; nameLink.rel = 'noopener';
+        nameLink.textContent = e.name;
+        supertitle.appendChild(nameLink);
+      } else supertitle.textContent = e.name;
       clearTimeout(fadeTimer); clearTimeout(cycleTimer);
       panel.classList.remove('is-slow', 'is-cycling');
       versions = versionsOf(e); held = false;
