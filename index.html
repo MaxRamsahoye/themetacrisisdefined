@@ -743,7 +743,8 @@ h1 {
 .figure-scroll { overflow-x: auto; }
 .diagram { display: block; width: 100%; max-width: 48rem; margin: 0 auto; min-width: 31rem; height: auto; overflow: visible; }
 .diagram line, .diagram path { fill: none; stroke: currentColor; stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.diagram .d-dots { stroke: var(--ink-soft); stroke-dasharray: 2 4; }
+.diagram .d-dots { stroke: var(--ink-soft); stroke-dasharray: 2 4; stroke-linecap: butt; }
+.diagram .d-head { stroke: var(--ink-soft); stroke-linejoin: miter; }
 .diagram text { fill: currentColor; stroke: none; }
 .diagram .d-label { font-size: 17px; }
 .diagram .d-date { font-size: 13px; fill: var(--ink-soft); font-variant-numeric: lining-nums; }
@@ -943,8 +944,8 @@ h1 {
           <path d="M248 369 H232 V655 H248"/>
           <line x1="214" y1="512.0" x2="232" y2="512.0"/>
           <text class="d-label" x="206" y="512.0" text-anchor="end" dominant-baseline="middle">Protocrisis</text>
-          <line class="d-dots" x1="664" y1="655" x2="664" y2="22"/>
-          <path d="M659 30 L664 18 L669 30"/>
+          <line class="d-dots" x1="664" y1="18" x2="664" y2="655"/>
+          <path class="d-head" d="M659.5 27 L664 18 L668.5 27"/>
           <text class="d-axis" x="664" y="689" text-anchor="end" dominant-baseline="middle">Military-Economic Adaptationism &amp; Cultural Evolution</text>
           </svg>
         </div>
