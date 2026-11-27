@@ -752,6 +752,14 @@ h1 {
 .diagram .d-note { font-size: 15px; fill: var(--ink-soft); }
 .diagram .d-axis { font-size: 15px; font-style: italic; fill: var(--ink-soft); }
 .essay-figure figcaption { margin-top: 1.75rem; font-size: 1em; line-height: 1.5; color: var(--ink-soft); text-align: center; text-wrap: balance; }
+/* Models of the Metacrisis: the views as a list, each with its sub-views
+   indented beneath it on a fine rule. */
+.essay-models, .essay-models ul { list-style: none; margin: 0; padding: 0; }
+.essay-models > li { margin: 0 0 1.75rem; }
+.essay-models ul { margin: .75rem 0 0; padding-left: 1.25rem; border-left: 1px solid var(--rule); }
+.essay-models ul p { margin: 0; }
+.essay-models .model-name { font-weight: 600; }
+.essay-models .model-gloss { font-style: italic; color: var(--ink-soft); }
 /* While the article is open, the names menu fades away on desktop and comes
    back while the pointer is anywhere left of the article's text (or while
    the menu has keyboard focus). */
@@ -951,6 +959,28 @@ h1 {
         <figcaption>A diagram introducing the neologisms of the protocrisis and the hypercrisis to indicate the early-stage and late-stage of the metacrisis and represent a synthesis of the civilisational and modernist views.</figcaption>
       </figure>
 
+    </article>
+    <article class="essay" id="models" hidden>
+      <header class="essay-head">
+        <h2 class="essay-title">Models of the <i>Metacrisis</i></h2>
+      </header>
+      <ul class="essay-models">
+        <li>
+          <p><a class="model-name" href="#structuralists">The Structuralists</a> <span class="model-gloss">(classically materialists)</span>: those who claim that it is political economy and game-theory, institutions and incentives, that are driving global problems.</p>
+          <ul>
+            <li><p><span class="model-name">The Civilisational-Materialists</span>: the metacrisis originates with the neolithic revolution, the transition from nomadic hunter-gatherer societies to settled agricultural civilisations, later exacerbated by the industrial and information revolutions.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p><a class="model-name" href="#culturalists">The Culturalists</a> <span class="model-gloss">(classically idealists)</span>: those who believe that it is the epistemology, axiology and phenomenology, the ‘collective consciousness’, of modernity that is responsible.</p>
+          <ul>
+            <li><p><span class="model-name">The Modernist-Idealists</span>: the metacrisis is a product of modernity, set in motion by the period and thought of the Enlightenment.</p></li>
+          </ul>
+        </li>
+        <li>
+          <p><a class="model-name" href="#holists">The Holists</a>: those who treat the metacrisis as a single phenomenon that cannot be reduced to any one of its domains.</p>
+        </li>
+      </ul>
     </article>
     <div class="orgs" id="orgs" hidden>
       <p class="orgs-label">Research organisations represented</p>
@@ -1163,11 +1193,23 @@ var ABOUT = {
   text: '<strong><a href="https://maxramsahoye.github.io/themetacrisisdefined/"><i>themetacrisisdefined</i></a></strong> is a central reference site that collates <strong>definitions of the metacrisis from the theorists who have employed the concept</strong>. Within the space, the term is used in at least three recurring ways, and its exact meaning is still contested. Read side by side, the definitions show where the major theorists converge and where they part: some diagnose the metacrisis as emerging from the <i>external</i> structures of civilisation, some to its <i>inner</i> world, and some unify the two. To proceed, select a name to read a definition of the Metacrisis in its theorist’s own words. This genealogy was curated by <a href="https://maxramsahoye.github.io/max/" target="_blank" rel="noopener">Max Ramsahoye</a>, whose accompanying article, <a href="#article"><i>What is the Metacrisis and What Should it Be?</i></a>, sets out the main views of what the metacrisis is and what caused it.',
 };
 
+// Article-style entries open a page of their own (an <article class="essay">
+// in the markup, named by `page`) in place of a definition.
+// Models of the Metacrisis, at the head of the names menu.
+var MODELS = {
+  name: 'Models of the Metacrisis',
+  slug: 'models',
+  page: 'models',
+  width: '50rem',
+  text: ''
+};
+
 // The article, opened from the page button at the top right. Its text is
 // in the page itself (#essay).
 var ARTICLE = {
   name: 'What is the Metacrisis and What Should it Be?',
   slug: 'article',
+  page: 'essay',      // the page's own markup
   width: '50rem',
   text: ''
 };
@@ -1498,10 +1540,10 @@ var THINKERS = [
       buildVersions();
       renderVersion(0);
       orgs.hidden = i !== about;
-      essay.hidden = i !== article;
-      panel.classList.toggle('is-article', i === article);
-      layout.classList.toggle('is-article', i === article);
-      if (i === article) layout.classList.remove('nav-awake');
+      pages.forEach(function(el){ el.hidden = el.id !== e.page; });
+      panel.classList.toggle('is-article', !!e.page);
+      layout.classList.toggle('is-article', !!e.page);
+      if (e.page) layout.classList.remove('nav-awake');
       if (i === about) countUp();
       if (i !== about) pickOrg(-1);
       panel.classList.toggle('is-quote', i !== home);
@@ -1538,6 +1580,14 @@ var THINKERS = [
     return b;
   }
 
+  var pages = [].slice.call(document.querySelectorAll('.essay'));
+  // Models of the Metacrisis heads the menu, in a section of its own.
+  (function(){
+    var section = document.createElement('li');
+    section.className = 'thinker-section thinker-section-page';
+    section.appendChild(entryButton(MODELS, 'thinker thinker-group'));
+    list.appendChild(section);
+  })();
   var names = null;
   THINKERS.forEach(function(t, n){
     // A `group` starts a new section: its label, then its own list of names.
@@ -1626,7 +1676,6 @@ var THINKERS = [
   });
 
   // The article: the page button toggles it.
-  var essay = document.getElementById('essay');
   var articleBtn = document.getElementById('article-toggle');
   var article = entries.length;
   entries.push(ARTICLE);
@@ -1635,8 +1684,9 @@ var THINKERS = [
   // On the article, the names menu wakes while the pointer is left of the
   // text column.
   document.addEventListener('pointermove', function(e){
-    if (current !== article || e.pointerType === 'touch') return;
-    layout.classList.toggle('nav-awake', e.clientX < essay.getBoundingClientRect().left);
+    var page = entries[current] && entries[current].page;
+    if (!page || e.pointerType === 'touch') return;
+    layout.classList.toggle('nav-awake', e.clientX < document.getElementById(page).getBoundingClientRect().left);
   });
   document.documentElement.addEventListener('mouseleave', function(){ layout.classList.remove('nav-awake'); });
 
