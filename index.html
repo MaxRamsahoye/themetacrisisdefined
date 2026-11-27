@@ -1443,7 +1443,12 @@ var THINKERS = [
       label.appendChild(num);
       label.appendChild(title);
       b.appendChild(label);
-      b.addEventListener('click', function(){ held = true; clearTimeout(cycleTimer); if (k !== version) fadeTo(k); });
+      b.addEventListener('click', function(){
+        held = true; clearTimeout(cycleTimer);
+        var hash = versionSlug(entries[current], k);
+        if (hash !== location.hash) history.pushState(null, '', hash);
+        if (k !== version) fadeTo(k);
+      });
       li.appendChild(b);
       versionList.appendChild(li);
       versionButtons.push(b);
@@ -1518,13 +1523,26 @@ var THINKERS = [
     return e.slug || e.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
       .replace(/^the /, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
+  // A theorist's further definitions have addresses of their own: the entry's
+  // slug, a slash and the numeral, as /#jonah-wilberg/ii. The bare slug
+  // opens the first and lets them cycle; a numeral opens that one and holds
+  // it. fromHash leaves the numeral's index (or -1) in hashVersion.
+  var hashVersion = -1;
+  function versionSlug(e, k){ return '#' + slugOf(e) + '/' + roman(k + 1).toLowerCase(); }
   function fromHash(){
-    var slug = decodeURIComponent(location.hash.slice(1)).toLowerCase();
-    for (var k = 0; k < entries.length; k++) if (slugOf(entries[k]) === slug) return k;
+    var parts = decodeURIComponent(location.hash.slice(1)).toLowerCase().split('/');
+    hashVersion = -1;
+    for (var k = 0; k < entries.length; k++) if (slugOf(entries[k]) === parts[0]) {
+      if (parts[1]) {
+        var n = versionsOf(entries[k]).length;
+        for (var j = 0; j < n && n > 1; j++) if (roman(j + 1).toLowerCase() === parts[1]) hashVersion = j;
+      }
+      return k;
+    }
     return home;
   }
 
-  function show(i, instant, fromHistory){
+  function show(i, instant, fromHistory, startAt){
     current = i;
     var e = entries[i];
     if (!fromHistory){
@@ -1543,13 +1561,15 @@ var THINKERS = [
       clearTimeout(fadeTimer); clearTimeout(cycleTimer);
       panel.classList.remove('is-slow', 'is-cycling');
       versions = versionsOf(e); held = false;
+      var start = startAt >= 0 && startAt < versions.length ? startAt : 0;
+      if (startAt >= 0) held = true;
       firstHold = e.firstHold || 0;
       hold = e.hold || 0;
       // Article names beside the numerals, unless the entry asks for
       // numerals alone (numeralsOnly: true).
       numeralsOnly = !!e.numeralsOnly;
       buildVersions();
-      renderVersion(0);
+      renderVersion(start);
       orgs.hidden = i !== about;
       pages.forEach(function(el){ el.hidden = el.id !== e.page; });
       panel.classList.toggle('is-article', !!e.page);
@@ -1707,10 +1727,16 @@ var THINKERS = [
 
   window.addEventListener('popstate', function(){
     var k = fromHash();
-    if (k !== current) show(k, false, true);
+    if (k !== current) return show(k, false, true, hashVersion);
+    // The same theorist: step to the numeral in the address, or, back on the
+    // bare address, let the definitions cycle again.
+    clearTimeout(cycleTimer);
+    if (hashVersion >= 0) { held = true; if (hashVersion !== version) fadeTo(hashVersion); }
+    else { held = false; schedule(); }
   });
 
-  show(fromHash(), true, true);
+  var first = fromHash();
+  show(first, true, true, hashVersion);
 })();
 
 // Dominoes: book-shaped bars that topple in a chain. Each bar has its own fall
